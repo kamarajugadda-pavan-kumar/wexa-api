@@ -62,6 +62,7 @@ jobs:
             --from-literal=GMAIL_USER="${{ secrets.GMAIL_USER }}"\
             --from-literal=GMAIL_PASSWORD="${{ secrets.GMAIL_PASSWORD }}"\
             --from-literal=NODE_ENV="${{ secrets.NODE_ENV }}"\
+            --from-literal=PORT="${{ secrets.PORT }}"\
             --dry-run=client -o yaml | kubectl apply -f -
 
       - name: Deploy to Kubernetes

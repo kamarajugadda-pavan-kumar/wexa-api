@@ -20,7 +20,11 @@ initWebSocket(server);
 // =============================================================================
 const corsOptions = {
   origin: (origin, callback) => {
-    const allowedOrigins = ["http://localhost:5173", "http://localhost:4173"];
+    const allowedOrigins = [
+      "http://localhost:5173",
+      "http://localhost:4173",
+      "http://web.connectify.thelollapalooza.in",
+    ];
     if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
       callback(null, true);
     } else {

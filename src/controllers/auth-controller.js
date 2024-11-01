@@ -44,6 +44,7 @@ const signIn = async (req, res) => {
       httpOnly: false,
       maxAge: 24 * 60 * 60 * 1000,
       sameSite: "None",
+      secure: false,
     });
     return res.status(StatusCodes.OK).json(response);
   } catch (error) {

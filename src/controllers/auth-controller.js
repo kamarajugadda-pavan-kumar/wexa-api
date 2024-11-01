@@ -43,7 +43,7 @@ const signIn = async (req, res) => {
     res.cookie("authToken", token, {
       httpOnly: false,
       maxAge: 24 * 60 * 60 * 1000,
-      SameSite: "None",
+      sameSite: "None",
     });
     return res.status(StatusCodes.OK).json(response);
   } catch (error) {

@@ -11,6 +11,8 @@ spec:
     metadata:
       labels:
         app: api-wexa
+      annotations:
+        kubectl.kubernetes.io/restartedAt: "{{ .Date.Unix }}"
     spec:
       containers:
         - name: api-wexa

@@ -1,0 +1,69 @@
+name: Deploy api-wexa
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Google Cloud authentication
+        uses: google-github-actions/auth@v1 # Specify version
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+
+      - name: Set up gcloud Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+
+      - name: Get GKE credentials
+        uses: google-github-actions/get-gke-credentials@v1
+        with:
+          cluster_name: ${{ secrets.GKE_CLUSTER_NAME }}
+          location: ${{ secrets.GKE_CLUSTER_LOCATION }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Docker image
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/api-wexa:latest .
+          docker push ${{ secrets.DOCKER_USERNAME }}/api-wexa:latest
+
+      - name: Create Kubernetes Secrets
+        run: |
+          kubectl create secret generic api-wexa-secrets \
+            --from-literal=DB_NAME="${{ secrets.DB_NAME }}" \
+            --from-literal=DB_HOST="${{ secrets.DB_HOST }}" \
+            --from-literal=DB_UN="${{ secrets.DB_UN }}" \
+            --from-literal=DB_PW="${{ secrets.DB_PW }}" \
+            --from-literal=DB_PORT="${{ secrets.DB_PORT }}" \
+            --from-literal=JWT_SECRET="${{ secrets.JWT_SECRET }}" \
+            --from-literal=JWT_EXPIRATION="${{ secrets.JWT_EXPIRATION }}" \
+            --from-literal=DOCKER_USERNAME="${{ secrets.DOCKER_USERNAME }}" \
+            --from-literal=AWS_ACCESS_KEY_ID="${{ secrets.AWS_ACCESS_KEY_ID }}"\
+            --from-literal=AWS_SECRET_ACCESS_KEY="${{ secrets.AWS_SECRET_ACCESS_KEY }}"\
+            --from-literal=AWS_REGION="${{ secrets.AWS_REGION }}"\
+            --from-literal=AWS_BUCKET_NAME="${{ secrets.AWS_BUCKET_NAME }}"\
+            --from-literal=APP_URL="${{ secrets.APP_URL }}"\
+            --from-literal=GMAIL_USER="${{ secrets.GMAIL_USER }}"\
+            --from-literal=GMAIL_PASSWORD="${{ secrets.GMAIL_PASSWORD }}"\
+            --dry-run=client -o yaml | kubectl apply -f -
+
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl apply -f k8s/api-wexa-deployment.yaml
+          kubectl apply -f k8s/api-wexa-service.yaml

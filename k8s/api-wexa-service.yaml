@@ -8,6 +8,6 @@ spec:
     app: api-wexa
   ports:
     - protocol: TCP
-      port: 56000
+      port: 80
       targetPort: 56000
   sessionAffinity: ClientIP

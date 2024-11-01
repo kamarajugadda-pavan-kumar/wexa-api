@@ -41,9 +41,9 @@ const signIn = async (req, res) => {
     await logUserActivity(userId, USER_LOGIN, "User Logged In ");
 
     res.cookie("authToken", token, {
-      httpOnly: false,
+      httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000,
-      sameSite: "None",
+      sameSite: "Strict",
       secure: false,
     });
     return res.status(StatusCodes.OK).json(response);

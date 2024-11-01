@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-wexa
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-wexa
+  template:
+    metadata:
+      labels:
+        app: api-wexa
+    spec:
+      containers:
+        - name: api-wexa
+          image: pavankd12/api-wexa:latest
+          envFrom:
+            - secretRef:
+                name: api-wexa-secrets
+          ports:
+            - containerPort: 56000
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"

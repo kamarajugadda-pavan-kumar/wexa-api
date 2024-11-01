@@ -10,3 +10,4 @@ spec:
     - protocol: TCP
       port: 56000
       targetPort: 56000
+  sessionAffinity: ClientIP

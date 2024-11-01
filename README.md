@@ -33,7 +33,7 @@ npm install
   ex:
   ```
       PORT = 55000
-      JWT_SECRET = PIFU/bs2bny9ZCUjkIPHMBm8T7+0auN+71XxiFawo0Y=
+      JWT_SECRET = xxxxxxxx
       JWT_EXPIRATION = 1d
   ```
 - go inside the `src` folder and execute the following command:

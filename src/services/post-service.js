@@ -39,8 +39,16 @@ const GetPost = async (userId, postId) => {
     const post = await Post.findOne({
       where: { userId, id: postId },
       include: [
-        { model: Media, attributes: ["id", "mediaType", "mediaUrl"] },
-        { model: User, attributes: ["id", "username", "profilePicture"] },
+        {
+          model: Media,
+          attributes: ["id", "mediaType", "mediaUrl"],
+          as: "media",
+        },
+        {
+          model: User,
+          attributes: ["id", "username", "profilePicture"],
+          as: "user",
+        },
       ],
     });
 
